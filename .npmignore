@@ -1,0 +1,25 @@
+# 开发和测试相关
+__tests__/
+coverage/
+.nyc_output/
+
+# 配置文件
+.eslintrc.js
+.prettierrc.js
+jest.config.js
+
+# 版本控制
+.git/
+.gitignore
+
+# 编辑器配置
+.vscode/
+.idea/
+
+# 日志文件
+logs/
+*.log
+
+# 其他
+.DS_Store
+Thumbs.db

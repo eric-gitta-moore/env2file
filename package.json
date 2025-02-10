@@ -1,7 +1,7 @@
 {
   "name": "env2file",
-  "version": "1.0.0",
-  "description": "Write environment variables to a file",
+  "version": "1.2.0",
+  "description": "A tool for writing environment variables to files with support for base64 encoding and variable references",
   "main": "index.js",
   "bin": {
     "env2file": "./bin/env2file.js"
@@ -26,7 +26,10 @@
   "keywords": [
     "environment",
     "file",
-    "base64"
+    "base64",
+    "env",
+    "config",
+    "environment-variables"
   ],
   "author": "Eric Moore",
   "license": "MIT"
