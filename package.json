@@ -1,0 +1,24 @@
+{
+  "name": "env2file",
+  "version": "1.0.0",
+  "description": "Write environment variables to a file",
+  "main": "index.js",
+  "bin": {
+    "env2file": "./bin/env2file.js"
+  },
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "keywords": [
+    "environment",
+    "file",
+    "base64"
+  ],
+  "author": "Eric Moore",
+  "license": "MIT"
+}
