@@ -5,7 +5,7 @@ const path = require('path');
 jest.mock('fs');
 
 // Import functions from env2file.js
-const { parseWriteEnv, writeToFile } = require('../bin/env2file.js');
+const { parseWriteEnv, writeToFile, decodeContent } = require('../bin/env2file.js');
 
 describe('env2file', () => {
   // Track created files for cleanup
@@ -41,6 +41,39 @@ describe('env2file', () => {
       } catch (error) {
         console.warn(`Failed to clean up file: ${filePath}`, error);
       }
+    });
+  });
+
+  describe('decodeContent', () => {
+    test('should decode base64 content correctly', () => {
+      const testContent = 'Hello World';
+      const base64Content = Buffer.from(testContent).toString('base64');
+      expect(decodeContent(base64Content)).toBe(testContent);
+    });
+
+    test('should get content from environment variable when using $ prefix', () => {
+      process.env.TEST_VAR = 'test content';
+      expect(decodeContent('$TEST_VAR')).toBe('test content');
+    });
+
+    test('should decode base64 encoded environment variable when using base64:$ prefix', () => {
+      const testContent = 'Hello World';
+      process.env.BASE64_VAR = Buffer.from(testContent).toString('base64');
+      expect(decodeContent('base64:$BASE64_VAR')).toBe(testContent);
+    });
+
+    test('should throw error when referenced environment variable is not set', () => {
+      delete process.env.NONEXISTENT_VAR;
+      expect(() => {
+        decodeContent('$NONEXISTENT_VAR');
+      }).toThrow('Error: Environment variable NONEXISTENT_VAR is not set');
+    });
+
+    test('should throw error when base64 encoded environment variable is not set', () => {
+      delete process.env.NONEXISTENT_BASE64_VAR;
+      expect(() => {
+        decodeContent('base64:$NONEXISTENT_BASE64_VAR');
+      }).toThrow('Error: Environment variable NONEXISTENT_BASE64_VAR is not set');
     });
   });
 
@@ -84,6 +117,38 @@ describe('env2file', () => {
         { filePath: file1.path, content: file1.content },
         { filePath: file2.path, content: file2.content }
       ]);
+    });
+
+    test('should parse environment variable references correctly', () => {
+      process.env.CONTENT_VAR = 'Hello from env';
+      process.env.WRITE = '[./test.txt]($CONTENT_VAR)';
+
+      const result = parseWriteEnv();
+      expect(result).toEqual([{
+        filePath: './test.txt',
+        content: 'Hello from env'
+      }]);
+    });
+
+    test('should handle multiple environment variable references', () => {
+      process.env.CONTENT1 = 'First content';
+      process.env.CONTENT2 = 'Second content';
+      process.env.WRITE = '[./test1.txt]($CONTENT1);[./test2.txt]($CONTENT2)';
+
+      const result = parseWriteEnv();
+      expect(result).toEqual([
+        { filePath: './test1.txt', content: 'First content' },
+        { filePath: './test2.txt', content: 'Second content' }
+      ]);
+    });
+
+    test('should throw error when referenced environment variable is not set', () => {
+      delete process.env.NONEXISTENT_VAR;
+      process.env.WRITE = '[./test.txt]($NONEXISTENT_VAR)';
+
+      expect(() => {
+        parseWriteEnv();
+      }).toThrow('Error: Environment variable NONEXISTENT_VAR is not set');
     });
   });
 

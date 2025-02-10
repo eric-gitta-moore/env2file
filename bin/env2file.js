@@ -3,7 +3,26 @@
 const fs = require('fs');
 const path = require('path');
 
-function decodeBase64(str) {
+function decodeContent(str) {
+  // Check if the content is an environment variable reference
+  if (str.startsWith('$')) {
+    const envVar = str.slice(1); // Remove the $ prefix
+    const envValue = process.env[envVar];
+    if (envValue === undefined) {
+      throw new Error(`Error: Environment variable ${envVar} is not set`);
+    }
+    return envValue;
+  }
+  // Check if the content is a base64 encoded environment variable
+  if (str.startsWith('base64:$')) {
+    const envVar = str.replace('base64:$', ''); // Remove the base64:$ prefix
+    const envValue = process.env[envVar];
+    if (envValue === undefined) {
+      throw new Error(`Error: Environment variable ${envVar} is not set`);
+    }
+    return Buffer.from(envValue, 'base64').toString('utf-8');
+  }
+  // Otherwise treat as base64 encoded content
   return Buffer.from(str, 'base64').toString('utf-8');
 }
 
@@ -28,7 +47,7 @@ function parseWriteEnv() {
 
     return {
       filePath: match[1],
-      content: decodeBase64(match[2])
+      content: decodeContent(match[2])
     };
   });
 }
@@ -64,7 +83,8 @@ function main() {
 // Export functions for testing
 module.exports = {
   parseWriteEnv,
-  writeToFile
+  writeToFile,
+  decodeContent
 };
 
 // Only run main if this file is being run directly

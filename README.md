@@ -36,10 +36,15 @@ pnpx env2file
 WRITE="[文件路径](Base64编码的内容)"
 ```
 
+内容支持以下三种格式：
+1. Base64编码的直接内容：`[文件路径](Base64内容)`
+2. 环境变量引用：`[文件路径]($ENV_VAR)`，对应 `process.env.ENV_VAR`
+3. Base64编码的环境变量内容：`[文件路径](base64:$ENV_VAR)`，对应 `Buffer.from(process.env.ENV_VAR).toString('base64')`
+
 多个写入指令可以用分号(;)分隔：
 
 ```
-WRITE="[文件1](内容1的Base64);[文件2](内容2的Base64)"
+WRITE="[文件1](内容1的Base64);[文件2]($ENV_VAR2);[文件3](base64:$ENV_VAR3)"
 ```
 
 ### 示例 | Examples
