@@ -17,13 +17,13 @@ A simple tool to write environment variables to files.
 
 ```bash
 # 全局安装
-npm install -g env2file
+npm install -g @eric-gitta-moore/env2file
 
 # 或者使用 npx
-npx env2file
+npx @eric-gitta-moore/env2file
 
 # 或者使用 pnpx
-pnpx env2file
+pnpx @eric-gitta-moore/env2file
 ```
 
 ## 使用方法 | Usage
