@@ -1,8 +1,12 @@
 {
-  "name": "env2file",
+  "name": "@eric-gitta-moore/env2file",
   "version": "1.2.0",
   "description": "A tool for writing environment variables to files with support for base64 encoding and variable references",
-  "main": "index.js",
+  "homepage": "https://github.com/eric-gitta-moore/env2file",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eric-gitta-moore/env2file.git"
+  },
   "bin": {
     "env2file": "./bin/env2file.js"
   },
